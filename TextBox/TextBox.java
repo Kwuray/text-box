@@ -1,4 +1,8 @@
+//This is the main class of this package.
+//This represent a textbox, with 4 coordinates for each corner
+//It can be drawn or not, entirely or only some sides
 public class TextBox {
+  
   private Coordinates[] coord;
   private int width;
   private int height;
@@ -15,6 +19,7 @@ public class TextBox {
     return this.width;
   }
 
+  //Set the 4 corners coordinates
   private setCoord(Coordinates topLeftCoord) {
     this.coord = new coordDebut[4];
     this.coord[0] = topLeftCoord;
