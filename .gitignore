@@ -1,0 +1,11 @@
+*.class
+.*
+*.gz
+*.xlsx
+*.zip
+*.png
+*.mp4
+*.ova
+*.vdi
+*.vmdk
+!/.gitignore

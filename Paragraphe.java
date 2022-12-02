@@ -1,0 +1,3 @@
+class Paragraphe {
+  Ligne[] lignes;
+}
