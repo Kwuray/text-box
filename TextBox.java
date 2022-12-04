@@ -89,10 +89,6 @@ class TextBox extends Program {
     }
   }
 
-  void clearTerminal() {
-    print("\033c");
-  }
-
   String ligneComplete(int taille, char delimiteur) {
     String result = "" + delimiteur;
     for (int i = 0; i < (taille - 2) / 2; i++) {

@@ -10,33 +10,23 @@ public class TextBox {
   }
 //declaration
 //----------------------------------
-  private Coordinates[] coord;
   private int width;
   private int height;
+  private HorizontalBoxLine topLine;
+  private HorizontalBoxLine bottomLine;
+  private VerticalBoxLine leftLine;
+  private VerticalBoxLine rightLine;
 //----------------------------------
 
 
 //set & get methods
 //----------------------------------
-  public Coordinates[] getCoord() {
-    return this.coord;
-  }
-
   public int getWidth() {
     return this.width;
   }
 
   public int getHeight() {
     return this.width;
-  }
-
-  //Set the 4 corners coordinates
-  private void setCoord(Coordinates topLeftCoord) {
-    this.coord = new Coordinates[4];
-    this.coord[0] = topLeftCoord;
-    this.coord[1] = new Coordinates(topLeftCoord.getRow(), topLeftCoord.getColumn() + this.getWidth() - 1);
-    this.coord[2] = new Coordinates(topLeftCoord.getRow() + this.getHeight() - 1, topLeftCoord.getColumn());
-    this.coord[3] = new Coordinates(topLeftCoord.getRow() + this.getHeight() - 1, topLeftCoord.getColumn() + this.getWidth());
   }
 
   private void setWidth(int width) {
@@ -46,74 +36,73 @@ public class TextBox {
   private void setHeight(int height) {
     this.height = height;
   }
+
+  private void setTopLine(int row, int column) {
+    this.topLine = new HorizontalBoxLine(row, column);
+  }
+
+  private void setBottomLine(int row, int column) {
+    this.bottomLine = new HorizontalBoxLine(row, column);
+  }
+
+  private void setLeftLine(int row, int column) {
+    this.leftLine = new VerticalBoxLine(row, column);
+  }
+
+  private void setRightLine(int row, int column) {
+    this.rightLine = new VerticalBoxLine(row, column);
+  }
+
+
+
+  //Set the 4 corners coordinates
+  private void setLines(int startRow, int startColumn) {
+    this.setTopLine(startRow, startColumn);
+    this.setBottomLine(startRow + this.getHeight() - 1, startColumn);
+    this.setLeftLine(startRow, startColumn);
+    this.setRightLine(startRow, startColumn + this.getWidth() - 1);
+  }
+
 //----------------------------------
 
 
 // Constructor
 //----------------------------------
-  public TextBox(Coordinates topLeftCoord, int width, int height) {
+  public TextBox(int startRow, int startColumn, int width, int height) {
     this.setWidth(width);
     this.setHeight(height);
-    this.setCoord(topLeftCoord);
+    this.setLines(startRow, startColumn);
   }
 //----------------------------------
 
 
 // Methods
 //----------------------------------
-  /*move to position row;column in terminal*/
-  public void cursor(int row, int column) {
-    System.out.print("\033[" + row + ";" + column + "H");
-  }
-
-  /*Draw an horizontal line*/
-  private void drawHorizontal(Coordinates start, char c) {
-    String drawing = "";
-
-    //Move cursor to correct line row and column
-    cursor(start.getRow(), start.getColumn());
-
-    //If width is even, no space between char
-    if (this.getWidth() % 2 == 0) {
-      for (int i = 0; i < this.getWidth(); i++) {
-        drawing += c;
-      }
-    //If odd, add beautiful space betwen
-    } else {
-      drawing += c;
-      for (int i = 0; i < (this.getWidth() / 2); i++) {
-        drawing += " " + c;
-      }
-    }
-    System.out.print(drawing);
-  }
-
-  /*Draw a vertical line*/
-  private void drawVertical(Coordinates start, char c) {
-    for (int i = 0; i < this.getHeight(); i++) {
-      //Move cursor to correct line row and column
-      cursor(start.getRow() + i, start.getColumn());
-      System.out.print(c);
-    }
+  /*Draw each lines*/
+  public void draw(char c) {
+    this.topLine.draw(this, c);
+    this.bottomLine.draw(this, c);
+    this.leftLine.draw(this, c);
+    this.rightLine.draw(this, c);
   }
 
   /*Draw one of the fourth lines, with a certain character*/
   public void draw(oneSide side, char c) {
     switch (side) {
       case TOP:
-        this.drawHorizontal(this.getCoord()[0], c);
+        this.topLine.draw(this, c);
         break;
 
       case BOTTOM:
-        this.drawHorizontal(this.getCoord()[2], c);
+        this.bottomLine.draw(this, c);
         break;
 
       case LEFT:
-        this.drawVertical(this.getCoord()[0], c);
+        this.leftLine.draw(this, c);
         break;
 
       case RIGHT:
-        this.drawVertical(this.getCoord()[1], c);
+        this.rightLine.draw(this, c);
         break;
 
       default:

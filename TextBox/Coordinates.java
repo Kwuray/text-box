@@ -1,5 +1,5 @@
 //This class provides coordinates for bi-dimensional array
-public class Coordinates {
+class Coordinates {
   private int row;
   private int column;
 
