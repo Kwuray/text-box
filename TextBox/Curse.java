@@ -5,7 +5,7 @@ public class Curse {
   }
 
   /*Clear everything in terminal*/
-  void clearTerminal() {
-    print("\033c");
+  static void clearTerminal() {
+    System.out.print("\033c");
   }
 }

@@ -14,7 +14,7 @@ class BoxLine {
 //set & get methods
 //----------------------------------
 
-  public void setCoord(int row, int column) {
+  protected void setCoord(int row, int column) {
     this.startCoord = new Coordinates(row, column);
   }
 //----------------------------------
@@ -22,7 +22,7 @@ class BoxLine {
 
 // Constructor
 //----------------------------------
-  public BoxLine(int row, int column) {
+  protected BoxLine(int row, int column) {
     setCoord(row, column);
   }
 //----------------------------------

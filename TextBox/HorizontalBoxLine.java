@@ -1,7 +1,7 @@
 class HorizontalBoxLine extends BoxLine {
 
   /*Draw an horizontal line*/
-  public void draw(TextBox box, char c) {
+  protected void draw(TextBox box, char c) {
     String drawing = "";
 
     //Move cursor to correct line row and column
@@ -23,7 +23,7 @@ class HorizontalBoxLine extends BoxLine {
   }
 
   /*Constructor*/
-  public HorizontalBoxLine(int row, int column) {
+  protected HorizontalBoxLine(int row, int column) {
     super(row, column);
   }
 }
