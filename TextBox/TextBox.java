@@ -79,7 +79,7 @@ public class TextBox {
   /*Print content inside the TextBox*/
   protected void printContent() {
     //Divide text in seperate line
-    String[] linesText = this.content.split("\n");
+    String[] linesText = Curse.split(this.content, '\n');
 
     //Theses variables are used when we need to print word by word
     //We know how many line was used
@@ -93,24 +93,24 @@ public class TextBox {
       Curse.cursor(rowPosition, columnPosition);
       //If there is enough place in line to print
       if (linesText[i].length() <= this.height - 4) {
-        System.out.println(linesText[i]);
+        System.out.print(linesText[i]);
       } else {
         //If not, we try to print word by word
-        String[] words = linesText[i].split(" ");
+        String[] words = Curse.split(linesText[i], ' ');
         int sizeUsed = 0;
         int wordRetries = 0;
         for (int j = 0; j < words.length; j++) {
-          //We need to edit word if it's null, to add backspace
-          String formatedWord = words[j];
-          if (words[j].length() == 0) {
-            formatedWord += " ";
-          }
-          int wordLength = formatedWord.length();
+          int wordLength = words[j].length();
           int sizeNeeded = (this.width - 4) * (1 + lineUsed);
           //If there is enough place, we print it !
-          if (wordLength + sizeUsed < sizeNeeded) {
-            System.out.print(formatedWord);
+          if (wordLength + 1 + sizeUsed < sizeNeeded) {
+            System.out.print(words[j] + " ");
             wordRetries = 0;
+            sizeUsed += wordLength + 1;
+          } else if (wordLength + 1 + sizeUsed < sizeNeeded) {
+            System.out.print(words[j]);
+            wordRetries = 0;
+            sizeUsed += wordLength;
           } else {
             //If not, we need to go to next line
             lineUsed++;
