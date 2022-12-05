@@ -64,7 +64,8 @@ public class TextBox {
   }
 
   public void setContent(String txt) {
-    this.content = txt;
+    //We need to remove all non-printable char at the end
+    this.content = Curse.removeNoPrintableAtTheEnd(txt);
     this.printContent();
   }
 
@@ -87,12 +88,12 @@ public class TextBox {
     //Look into each line until we cannot print anymore
     for (int i = 0; i < linesText.length && i <= this.height - 2; i++) {
       //Calculate new position
-      int rowPosition = this.startCoord.getRow() + i + lineUsed;
+      int rowPosition = this.startCoord.getRow() + i + lineUsed + 1;
       int columnPosition = this.startCoord.getColumn() + 2;
       //Move cursor to it
       Curse.cursor(rowPosition, columnPosition);
       //If there is enough place in line to print
-      if (linesText[i].length() <= this.height - 4) {
+      if (linesText[i].length() <= this.width - 4) {
         System.out.print(linesText[i]);
       } else {
         //If not, we try to print word by word
@@ -103,12 +104,13 @@ public class TextBox {
           int wordLength = words[j].length();
           int sizeNeeded = (this.width - 4) * (1 + lineUsed);
           //If there is enough place, we print it !
-          if (wordLength + 1 + sizeUsed < sizeNeeded) {
-            System.out.print(words[j] + " ");
-            wordRetries = 0;
-            sizeUsed += wordLength + 1;
-          } else if (wordLength + 1 + sizeUsed < sizeNeeded) {
+          if (wordLength + sizeUsed < sizeNeeded) {
             System.out.print(words[j]);
+            wordRetries = 0;
+            sizeUsed += wordLength;
+            //Try to print if last char is backspace
+          } else if (wordLength - 1 + sizeUsed < sizeNeeded && words[j].charAt(words[j].length() - 1) == ' ') {
+            System.out.print(words[j].substring(0, words[j].length() - 2));
             wordRetries = 0;
             sizeUsed += wordLength;
           } else {

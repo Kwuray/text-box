@@ -22,7 +22,7 @@ public class Curse {
   }
 
   static String[] split(String text, char c) {
-    int totalOccurences = countOccurencesOf(text, c);
+    int totalOccurences = countOccurencesOf(text, c) + 1;
     String[] result = new String[totalOccurences];
     int textLength = text.length();
     int totalFound = 0;
@@ -38,6 +38,19 @@ public class Curse {
       }
       j++;
     }
+    //result[totalFound] = ligne;
     return result;
+  }
+
+  static String removeNoPrintableAtTheEnd(String str) {
+    //If the last character is not printable, we remove it
+    char lastChar = str.charAt(str.length() - 1);
+    while (lastChar < ' ' && str.length() > 0) {
+      str = str.substring(0, str.length() - 1);
+      if (str.length() > 0) {
+        lastChar = str.charAt(str.length() - 1);
+      }
+    }
+    return str;
   }
 }
