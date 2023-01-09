@@ -2,9 +2,9 @@ public class Main {
   public static void main(String[] args) {
 
     Curse.clearTerminal();
-    TextBox mainBox = new TextBox(1, 1, 21, 40);
+    TextBox mainBox = new TextBox(1, 1, 40, 21);
     mainBox.draw('#');
-    mainBox.setContent("  Il était une fois...");
+    mainBox.setContent("\nIl était une fois\n   La princesse Sarah la plus belle de toutesssssssssssssssssssssssssssssssssssssssssssssssss\n\n\ne\ne\ne\ne\na\na\na\na\na\na\nd\nd\nd\nd");
     /*
     String[] s = Curse.split("Il était une fois...", '\n');
     for (int i = 0; i < s.length; i++) {

@@ -18,6 +18,7 @@ public class TextBox {
   private VerticalBoxLine leftLine;
   private VerticalBoxLine rightLine;
   private String content;
+  private String[] splittedContent;
 //----------------------------------
 
 
@@ -28,7 +29,7 @@ public class TextBox {
   }
 
   public int getHeight() {
-    return this.width;
+    return this.height;
   }
 
   public String getContent() {
@@ -66,6 +67,7 @@ public class TextBox {
   public void setContent(String txt) {
     //We need to remove all non-printable char at the end
     this.content = Curse.removeNoPrintableAtTheEnd(txt);
+    this.setSplittedContent();
     this.printContent();
   }
 
@@ -77,63 +79,64 @@ public class TextBox {
     this.setRightLine(startRow, startColumn + this.getWidth() - 1);
   }
 
-  /*Print content inside the TextBox*/
-  protected void printContent() {
+  //split content in array with one entry by row
+  private void setSplittedContent() {
+    for (int i = 0; i < this.splittedContent.length; i++) {
+      this.splittedContent[i] = "";
+    }
     //Divide text in seperate line
     String[] linesText = Curse.split(this.content, '\n');
-
-    //Theses variables are used when we need to print word by word
-    //We know how many line was used
-    int lineUsed = 0;
-    //Look into each line until we cannot print anymore
-    for (int i = 0; i < linesText.length && i <= this.height - 2; i++) {
-      //Calculate new position
-      int rowPosition = this.startCoord.getRow() + i + lineUsed + 1;
-      int columnPosition = this.startCoord.getColumn() + 2;
-      //Move cursor to it
-      Curse.cursor(rowPosition, columnPosition);
-      //If there is enough place in line to print
-      if (linesText[i].length() <= this.width - 4) {
-        System.out.print(linesText[i]);
-      } else {
-        //If not, we try to print word by word
-        String[] words = Curse.split(linesText[i], ' ');
-        int sizeUsed = 0;
-        int wordRetries = 0;
-        for (int j = 0; j < words.length; j++) {
-          int wordLength = words[j].length();
-          int sizeNeeded = (this.width - 4) * (1 + lineUsed);
-          //If there is enough place, we print it !
-          if (wordLength + sizeUsed < sizeNeeded) {
-            System.out.print(words[j]);
-            wordRetries = 0;
-            sizeUsed += wordLength;
-            //Try to print if last char is backspace
-          } else if (wordLength - 1 + sizeUsed < sizeNeeded && words[j].charAt(words[j].length() - 1) == ' ') {
-            System.out.print(words[j].substring(0, words[j].length() - 2));
-            wordRetries = 0;
-            sizeUsed += wordLength;
-          } else {
-            //If not, we need to go to next line
-            lineUsed++;
-            //And increment size not used
-            sizeUsed = (this.width - 4) * lineUsed;
-            //Retry this word
-            wordRetries++;
-            //Go to next position and decrement j to retry word only once
-            if (wordRetries < 2) {
-              Curse.cursor(rowPosition + lineUsed, columnPosition);
-              j--;
+    //While we can print inside the box
+    int resultCounter = 0;
+    int lineCounter = 0;
+    while(resultCounter < this.splittedContent.length) {
+      //Add line if there is one
+      if (lineCounter < linesText.length) {
+        //If there is enough space
+        if (this.splittedContent[resultCounter].length() + linesText[lineCounter].length() <= this.width - 4) {
+          this.splittedContent[resultCounter] = linesText[lineCounter];
+        } else {
+          //If not, we try to print word by word
+          String[] words = Curse.split(linesText[lineCounter], ' ');
+          //Add each word
+          for (int i = 0; i < words.length; i++) {
+            //If there is enough space, add the word
+            if (this.splittedContent[resultCounter].length() + words[i].length() <= this.width - 4) {
+              this.splittedContent[resultCounter] = this.splittedContent[resultCounter] + words[i];
+            } else if (words[i].charAt(words[i].length() - 1) == ' ' && this.splittedContent[resultCounter].length() + words[i].length() - 1 <= this.width - 4) { //Try to print if last char is backspace
+              this.splittedContent[resultCounter] = this.splittedContent[resultCounter] + words[i].substring(0, words[i].length() - 2);
+            } else if (words[i].length() > this.width - 4) { //If the word length is greater than box width
+              //add the maximum characters
+              resultCounter++;
+              this.splittedContent[resultCounter] = words[i].substring(0, this.width - 4);
+              words[i] = words[i].substring(this.width - 4, words[i].length());
+              i--;
             } else {
-              //We cannot print anymore !
-              return;
+              //No more space !
+              resultCounter++;
+              i--;
             }
           }
         }
       }
+      resultCounter++;
+      lineCounter++;
     }
   }
 
+  /*Print content inside the TextBox*/
+  protected void printContent() {
+    for (int i = 0; i < this.splittedContent.length; i++) {
+      //Calculate new position
+      int rowPosition = this.startCoord.getRow() + i + 1;
+      int columnPosition = this.startCoord.getColumn() + 2;
+      //Move cursor to it
+      Curse.cursor(rowPosition, columnPosition);
+      //print one line
+      System.out.print(this.splittedContent[i]);
+
+    }
+  }
 //----------------------------------
 
 
@@ -144,6 +147,7 @@ public class TextBox {
     this.setHeight(height);
     this.setStartCoord(startRow, startColumn);
     this.setLines(startRow, startColumn);
+    this.splittedContent = new String[this.getHeight() - 2];
   }
 //----------------------------------
 
